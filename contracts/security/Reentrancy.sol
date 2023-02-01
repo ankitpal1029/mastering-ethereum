@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.9;
 
 contract EtherStore{
     uint256 public withdrawalLimit = 1 ether;
