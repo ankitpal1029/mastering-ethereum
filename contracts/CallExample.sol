@@ -18,8 +18,8 @@ library calledLibrary {
 
 contract caller {
     function make_calls(calledContract _calledContract) public {
-        _calledContract.calledFunction();
-        calledLibrary.calledFunction();
+        // _calledContract.calledFunction();
+        // calledLibrary.calledFunction();
         
         (bool success, ) = address(_calledContract).call(abi.encodeWithSignature("calledFunction()"));
         require(success, "call not made");

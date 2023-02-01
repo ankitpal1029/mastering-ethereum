@@ -20,9 +20,9 @@ async function main() {
 
   const Caller = await hre.ethers.getContractFactory("caller", {
     signer: owner,
-    libraries: {
-      calledLibrary: calledLibrary.address,
-    },
+    // libraries: {
+    //   calledLibrary: calledLibrary.address,
+    // },
   });
   const caller = await Caller.deploy();
   await caller.deployed();
@@ -31,15 +31,36 @@ async function main() {
 
   const transactionHash = await cOwner.make_calls(calledContract.address);
 
-  const receipt = transactionHash.wait();
+  const receipt = await transactionHash.wait();
 
-  //   let iface = new ethers.utils.Interface(getAbi());
-  //   receipts.logs.forEach((log) => {
-  //     console.log(iface.parseLog(log));
+  //   let iface = new ethers.utils.Interface(getAbi("caller"));
+  //   console.log(getAbi("caller"));
+  //   receipt.logs.forEach((log) => {
+  //     // console.log(iface.parseLog(log));
+  //     if (log.address === caller.address) {
+  //       console.log(iface.parseLog(log));
+  //     }
   //   });
+
+  let ifaceL = new ethers.utils.Interface(getAbi("calledLibrary"));
+  receipt.logs.forEach((log) => {
+    // console.log(iface.parseLog(log));
+    if (log.address === calledLibrary.address) {
+      console.log(ifaceL.parseLog(log));
+    }
+  });
+
+  let ifaceC = new ethers.utils.Interface(getAbi("calledContract"));
+  receipt.logs.forEach((log) => {
+    // console.log(iface.parseLog(log));
+    console.log("> ", log.address);
+    if (log.address === calledContract.address) {
+      console.log(ifaceC.parseLog(log));
+    }
+  });
 }
-const getAbi = () => {
-  const dir = "./artifacts/contracts/CallExample.sol/caller.json";
+const getAbi = (contract) => {
+  const dir = `./artifacts/contracts/CallExample.sol/${contract}.json`;
   const file = fs.readFileSync(dir, "utf8");
   const json = JSON.parse(file);
   const abi = json.abi;
